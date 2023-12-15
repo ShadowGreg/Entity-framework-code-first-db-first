@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Seminars; 
+﻿namespace Seminars.Models; 
 
 public class User {
     public int UserId { get; set; }

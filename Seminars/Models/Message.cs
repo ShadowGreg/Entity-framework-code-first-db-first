@@ -1,4 +1,4 @@
-﻿namespace Seminars;
+﻿namespace Seminars.Models;
 
 public class Message {
     public int MessageId { get; set; }

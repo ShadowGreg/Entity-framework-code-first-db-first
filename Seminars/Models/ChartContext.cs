@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Seminars;
+namespace Seminars.Models;
 
 public class ChartContext: DbContext {
     public DbSet<User> Users { get; set; }
