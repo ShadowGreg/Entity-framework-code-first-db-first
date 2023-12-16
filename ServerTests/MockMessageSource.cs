@@ -10,6 +10,8 @@ public class MockMessageSource: IMessageSource {
     private Server _server;
     private IPEndPoint _endPoint = new IPEndPoint(IPAddress.Any, 0);
 
+    public NetMessage LastReceivedMessage { get; set; }
+
     public MockMessageSource() {
         _messages.Enqueue(new NetMessage() { Command = Command.Register, NickNameFrom = "Vasya" });
         _messages.Enqueue(new NetMessage() { Command = Command.Register, NickNameFrom = "Ulia" });
@@ -20,6 +22,8 @@ public class MockMessageSource: IMessageSource {
     }
 
     public async Task SentAsync(NetMessage message, IPEndPoint endPoint) {
+        LastReceivedMessage = message;
+        LastReceivedMessage.Command= Command.Confirmation;
         // throw new NotImplementedException();
     }
 

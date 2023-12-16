@@ -8,17 +8,17 @@ public class Client {
     private readonly string _name;
     private readonly string _ip;
     private readonly int _port;
-    private readonly IMessageSource _messageSource;
+    public IMessageSource _messageSource;
     private readonly IPEndPoint _remoteEndPoint;
+    private bool flag = true;
 
-    public Client(string name, string ip) {
+    public Client(string name, string ip, IMessageSource messageSource) {
         _name = name;
         _ip = ip;
         _port = 12345;
-        _messageSource = new UdpMessageSource();
+        _messageSource = messageSource;
         _remoteEndPoint = new IPEndPoint(IPAddress.Parse(_ip), _port);
     }
-
 
     public async Task Conform(NetMessage messageResource, IPEndPoint remoteEndPoint) {
         messageResource.Command = Command.Confirmation;
@@ -52,7 +52,7 @@ public class Client {
     public async Task ClientSender() {
         await Register(_remoteEndPoint);
 
-        while (true) {
+        while (flag) {
             try {
                 Console.WriteLine("Input address: ");
                 string address = Console.ReadLine() ?? throw new InvalidOperationException();
@@ -80,5 +80,10 @@ public class Client {
     public async Task Start() {
         await ClientListener();
         await ClientSender();
+    }
+    
+    public Task Stop() {
+        flag = false;
+        return Task.CompletedTask;
     }
 }
