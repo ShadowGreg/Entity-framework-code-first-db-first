@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using System.Text;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 namespace Seminars.Models;
@@ -8,9 +9,17 @@ public class ChartContext: DbContext {
     public DbSet<Message> Messages { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+        string filename = "Application.db";
+        string directory = @"C:\\Users\\shado\\OneDrive\\Desktop\\GB\\Разработка сетевого приложения С#\\Урок 5. Базы данных Entity framework, code firstdb first\\Seminar\\Seminars\\Seminars";
+        string filepath = Path.Combine(directory, filename);
+       StringBuilder sb = new StringBuilder();
+
+        sb.Append("Data Source=");
+        sb.Append(filepath);
+        
         const string baseConnectionString =
             "Data Source=Application.db";
-        string connectionString = new SqliteConnectionStringBuilder(baseConnectionString)
+        string connectionString = new SqliteConnectionStringBuilder(sb.ToString())
         {
             Mode = SqliteOpenMode.ReadWriteCreate,
         }.ToString();
