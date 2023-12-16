@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Seminars.Models;
 
@@ -10,9 +11,11 @@ using Seminars.Models;
 namespace Seminars.Migrations
 {
     [DbContext(typeof(ChartContext))]
-    partial class ChartContextModelSnapshot : ModelSnapshot
+    [Migration("20231216061721_Indexing")]
+    partial class Indexing
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

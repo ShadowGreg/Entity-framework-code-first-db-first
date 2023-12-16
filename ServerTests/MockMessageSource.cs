@@ -1,15 +1,40 @@
 ﻿using System.Net;
 using Seminars.Abstracts;
 using Seminars.Models;
+using Seminars.Services;
 
-namespace ServerTests; 
+namespace ServerTests;
 
 public class MockMessageSource: IMessageSource {
-    public Task SentAsync(NetMessage message, IPEndPoint endPoint) {
-        throw new NotImplementedException();
+    private Queue<NetMessage> _messages = new();
+    private Server _server;
+    private IPEndPoint _endPoint = new IPEndPoint(IPAddress.Any, 0);
+
+    public MockMessageSource() {
+        _messages.Enqueue(new NetMessage() { Command = Command.Register, NickNameFrom = "Vasya" });
+        _messages.Enqueue(new NetMessage() { Command = Command.Register, NickNameFrom = "Ulia" });
+        _messages.Enqueue(new NetMessage()
+            { Command = Command.Register, NickNameFrom = "Ulia", NickNameTo = "Vasya", Text = "Hello to Vasya" });
+        _messages.Enqueue(new NetMessage()
+            { Command = Command.Register, NickNameFrom = "Vasya", NickNameTo = "Ulia", Text = "Hello to Ulia" });
     }
 
-    public Task<NetMessage> ReceivedAsync(IPEndPoint endPoint) {
-        throw new NotImplementedException();
+    public async Task SentAsync(NetMessage message, IPEndPoint endPoint) {
+        // throw new NotImplementedException();
+    }
+
+    public async Task<NetMessage> ReceivedAsync(IPEndPoint endPoint) {
+        // throw new NotImplementedException();
+        endPoint = _endPoint;
+        if (_messages.Count == 0) {
+            await _server.Stop();
+            return null;
+        }
+
+        return _messages.Dequeue();
+    }
+
+    public void SetServer(Server server) {
+        _server = server;
     }
 }

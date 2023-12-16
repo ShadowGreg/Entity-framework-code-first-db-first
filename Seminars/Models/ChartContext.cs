@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 namespace Seminars.Models;
 
@@ -7,8 +8,12 @@ public class ChartContext: DbContext {
     public DbSet<Message> Messages { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-        const string connectionString =
-            "Data Source=blogging.db";
+        const string baseConnectionString =
+            "Data Source=Application.db";
+        string connectionString = new SqliteConnectionStringBuilder(baseConnectionString)
+        {
+            Mode = SqliteOpenMode.ReadWriteCreate,
+        }.ToString();
         //"Data Source=192.168.50.40,1433;Initial Catalog=myDataBase;User ID=admin;Password=StrongP@ssword;Encrypt=True;TrustServerCertificate=True;"
         //Data Source=192.168.50.40,1433;Network Library=DBMSSOCN;Initial Catalog=myDataBase;User ID=myUsername;Password=mssql1Ipw;
         optionsBuilder

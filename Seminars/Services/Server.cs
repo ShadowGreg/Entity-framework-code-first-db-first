@@ -8,19 +8,22 @@ namespace Seminars.Services;
 
 public class Server {
     private readonly IMessageSource _messageSource;
-    private readonly Dictionary<string, IPEndPoint> _clients;
+    public Dictionary<string, IPEndPoint> Clients { get; }
     private IPEndPoint _ep;
+    private readonly CancellationTokenSource _tokenSource;
 
-    public Server() {
-        _messageSource = new UdpMessageSource();
-        _clients = new Dictionary<string, IPEndPoint>();
+
+    public Server(IMessageSource messageSource) {
+        _messageSource = messageSource;
+        Clients = new Dictionary<string, IPEndPoint>();
         _ep = new IPEndPoint(IPAddress.Any, 0);
+        _tokenSource = new CancellationTokenSource();
     }
 
     public async Task Register(NetMessage netMessage) {
         Console.WriteLine($" Message register from {netMessage.NickNameFrom} to {netMessage.NickNameTo}");
 
-        if (_clients.TryAdd(netMessage.NickNameFrom, netMessage.EndPoint)) {
+        if (Clients.TryAdd(netMessage.NickNameFrom, netMessage.EndPoint)) {
             using (ChartContext context = new ChartContext()) {
                 context.Users.Add(
                     new User() { FullName = netMessage.NickNameFrom }
@@ -30,8 +33,8 @@ public class Server {
         }
     }
 
-    private async Task RelyMessage(NetMessage netMessage) {
-        if (_clients.TryGetValue(netMessage.NickNameTo!, out _ep!)) {
+    public async Task RelyMessage(NetMessage netMessage) {
+        if (Clients.TryGetValue(netMessage.NickNameTo!, out _ep!)) {
             int id = 0;
             await using (var ctx = new ChartContext()) {
                 var fromUser = await ctx.Users
@@ -57,7 +60,7 @@ public class Server {
         }
     }
 
-    private async Task Confirmation(int? id) {
+    public async Task Confirmation(int? id) {
         Console.WriteLine("Message confirmed id= " + id);
         using (var ctx = new ChartContext()) {
             var message = await ctx.Messages
@@ -89,7 +92,7 @@ public class Server {
     public async Task Start() {
         Console.WriteLine("Server started, and listening for messages...");
 
-        while (true) {
+        while (!_tokenSource.IsCancellationRequested) {
             try {
                 var message = _messageSource.ReceivedAsync(_ep).Result;
                 Console.WriteLine(message.ToString());
@@ -101,5 +104,10 @@ public class Server {
                 throw;
             }
         }
+    }
+
+    public Task Stop() {
+        _tokenSource.Cancel();
+        return Task.CompletedTask;
     }
 }
