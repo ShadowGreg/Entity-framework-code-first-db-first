@@ -1,10 +1,10 @@
 ﻿using System.Net;
-using System.Net.Sockets;
+using ChatCommon.Core.Entities;
+using ChatDb.Models;
+using ChatNetwork.Abstracts;
 using Microsoft.EntityFrameworkCore;
-using Seminars.Abstracts;
-using Seminars.Models;
 
-namespace Seminars.Services;
+namespace ChatApp.Services;
 
 public class Server {
     private readonly IMessageSource _messageSource;

@@ -1,8 +1,6 @@
 ﻿using System.Net;
-using Moq;
-using Seminars.Abstracts;
-using Seminars.Models;
-using Seminars.Services;
+using ChatApp.Services;
+using ChatCommon.Core.Entities;
 
 namespace ServerTests;
 

@@ -1,10 +1,10 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using Seminars.Abstracts;
-using Seminars.Models;
+using ChatCommon.Core.Entities;
+using ChatNetwork.Abstracts;
 
-namespace Seminars.Services;
+namespace ChatNetwork.Services;
 
 public class UdpMessageSource: IMessageSource {
     private readonly UdpClient _udpClient;

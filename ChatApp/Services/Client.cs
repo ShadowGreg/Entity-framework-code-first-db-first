@@ -1,8 +1,8 @@
 ﻿using System.Net;
-using Seminars.Abstracts;
-using Seminars.Models;
+using ChatCommon.Core.Entities;
+using ChatNetwork.Abstracts;
 
-namespace Seminars.Services;
+namespace ChatApp.Services;
 
 public class Client {
     private readonly string _name;

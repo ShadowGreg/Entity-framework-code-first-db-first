@@ -1,8 +1,9 @@
 ﻿using System.Net;
+using ChatApp.Services;
+using ChatCommon.Core.Entities;
+using ChatDb.Models;
+using ChatNetwork.Abstracts;
 using Microsoft.EntityFrameworkCore;
-using Seminars.Abstracts;
-using Seminars.Models;
-using Seminars.Services;
 
 namespace ServerTests;
 

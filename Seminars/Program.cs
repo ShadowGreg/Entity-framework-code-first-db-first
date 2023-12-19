@@ -1,4 +1,6 @@
-﻿using Seminars.Models;
+﻿
+using ChatCommon.Core.Entities;
+using ChatDb.Models;
 
 public class Program {
     public static async Task Main(string[] args) {

@@ -1,4 +1,4 @@
-﻿namespace Seminars.Models;
+﻿namespace ChatCommon.Core.Entities;
 
 public class Message {
     public int MessageId { get; set; }

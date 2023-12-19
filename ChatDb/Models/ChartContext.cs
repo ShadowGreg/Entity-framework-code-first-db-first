@@ -1,8 +1,9 @@
 ﻿using System.Text;
+using ChatCommon.Core.Entities;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace Seminars.Models;
+namespace ChatDb.Models;
 
 public class ChartContext: DbContext {
     public DbSet<User> Users { get; set; }

@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Seminars.Migrations
+namespace ChatDb.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Chartcontext : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,9 +15,9 @@ namespace Seminars.Migrations
                 name: "users",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    full_name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    full_name = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -28,13 +28,13 @@ namespace Seminars.Migrations
                 name: "messages",
                 columns: table => new
                 {
-                    MessageId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    text = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    send_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    is_sent = table.Column<bool>(type: "bit", nullable: false),
-                    UserFromId = table.Column<int>(type: "int", nullable: true),
-                    UserToId = table.Column<int>(type: "int", nullable: true)
+                    MessageId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    text = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    send_date = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    is_sent = table.Column<bool>(type: "INTEGER", nullable: false),
+                    UserFromId = table.Column<int>(type: "INTEGER", nullable: true),
+                    UserToId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {

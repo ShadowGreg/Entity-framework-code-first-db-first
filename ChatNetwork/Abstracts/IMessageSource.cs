@@ -1,7 +1,7 @@
 ﻿using System.Net;
-using Seminars.Models;
+using ChatCommon.Core.Entities;
 
-namespace Seminars.Abstracts;
+namespace ChatNetwork.Abstracts;
 
 public interface IMessageSource {
     Task SentAsync(NetMessage message, IPEndPoint endPoint);

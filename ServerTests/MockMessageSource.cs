@@ -1,7 +1,7 @@
 ﻿using System.Net;
-using Seminars.Abstracts;
-using Seminars.Models;
-using Seminars.Services;
+using ChatApp.Services;
+using ChatCommon.Core.Entities;
+using ChatNetwork.Abstracts;
 
 namespace ServerTests;
 

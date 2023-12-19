@@ -19,6 +19,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ChatApp\ChatApp.csproj" />
+      <ProjectReference Include="..\ChatCommon\ChatCommon.csproj" />
+      <ProjectReference Include="..\ChatDb\ChatDb.csproj" />
+      <ProjectReference Include="..\ChatNetwork\ChatNetwork.csproj" />
       <ProjectReference Include="..\Seminars\Seminars.csproj" />
     </ItemGroup>
 
