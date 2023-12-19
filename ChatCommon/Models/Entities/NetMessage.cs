@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 
+
 namespace ChatCommon.Models.Entities;
 
 public enum Command {
@@ -15,12 +16,22 @@ public class NetMessage {
     public DateTime DateTime { get; set; }
     public string? NickNameFrom { get; set; }
     public string? NickNameTo { get; set; }
-    
-    public IPEndPoint EndPoint { get; set; }
+
+    public string? EndPoint { get; set; }
 
     public Command Command { get; set; }
 
-    public string SerialazeMessageToJSON() => JsonSerializer.Serialize(this);
+    public string SerializeMessageToJson() {
+        string temp = "";
+        try {
+            temp = JsonSerializer.Serialize(this);
+        }
+        catch (Exception e) {
+            Console.WriteLine(e);
+        }
+
+        return temp;
+    }
 
     public static NetMessage? DeserializeMessgeFromJSON(string message) =>
         JsonSerializer.Deserialize<NetMessage>(message);

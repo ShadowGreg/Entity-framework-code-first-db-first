@@ -6,24 +6,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChatApp.Services;
 
-public class MessageSourceServer: IMessageSourceServer<IPEndPoint> {
-    private readonly IMessageSource<IPEndPoint> _messageSource;
-    public Dictionary<string, IPEndPoint> Clients { get; }
-    private IPEndPoint _ep;
+public class Server<T> where T : class {
+    private readonly IMessageSourceServer<T> _messageSource;
+    public Dictionary<string, T> Clients { get; }
+    private T _ep;
     private readonly CancellationTokenSource _tokenSource;
 
 
-    public MessageSourceServer(IMessageSource<IPEndPoint> messageSource) {
+    public Server(IMessageSourceServer<T> messageSource) {
         _messageSource = messageSource;
-        Clients = new Dictionary<string, IPEndPoint>();
-        _ep = CreateNewEndPoint();
+        Clients = new Dictionary<string, T>();
+        _ep = messageSource.CreateNewEndPoint();
         _tokenSource = new CancellationTokenSource();
     }
 
     public async Task Register(NetMessage netMessage) {
         Console.WriteLine($" Message register from {netMessage.NickNameFrom} to {netMessage.NickNameTo}");
 
-        if (Clients.TryAdd(netMessage.NickNameFrom, netMessage.EndPoint)) {
+        var castEndPoint = netMessage.EndPoint as T;
+        if (Clients.TryAdd(netMessage.NickNameFrom, castEndPoint )) {
             using (ChartContext context = new ChartContext()) {
                 context.Users.Add(
                     new User() { FullName = netMessage.NickNameFrom }
@@ -51,7 +52,7 @@ public class MessageSourceServer: IMessageSourceServer<IPEndPoint> {
 
             netMessage.Id = id;
 
-            await _messageSource.SentAsync(netMessage, _ep!);
+            _messageSource.Send(netMessage, _ep!);
 
             Console.WriteLine($"Message sent from {netMessage.NickNameFrom} to {netMessage.NickNameTo}");
         }
@@ -94,7 +95,7 @@ public class MessageSourceServer: IMessageSourceServer<IPEndPoint> {
 
         while (!_tokenSource.IsCancellationRequested) {
             try {
-                var message = _messageSource.ReceivedAsync(_ep).Result;
+                var message = _messageSource.Receive(ref _ep);
                 Console.WriteLine(message.ToString());
 
                 await ProcessMessage(message);
@@ -111,19 +112,11 @@ public class MessageSourceServer: IMessageSourceServer<IPEndPoint> {
         return Task.CompletedTask;
     }
 
-    public void Send(NetMessage message, IPEndPoint toAddr) {
-        _messageSource.SentAsync(message, toAddr).Wait();
+    public void Send(NetMessage message, T toAddr) {
+        _messageSource.Send(message, toAddr);
     }
 
-    public NetMessage Receive(ref IPEndPoint fromAddr) {
-        return _messageSource.ReceivedAsync(fromAddr).Result;
-    }
-
-    public IPEndPoint CreateNewEndPoint() {
-        return new IPEndPoint(IPAddress.Any, 0);
-    }
-
-    public IPEndPoint CopyEndPoint(IPEndPoint t) {
-        return new IPEndPoint(t.Address,t.Port);
+    public NetMessage Receive(ref T fromAddr) {
+        return _messageSource.Receive(ref fromAddr);
     }
 }

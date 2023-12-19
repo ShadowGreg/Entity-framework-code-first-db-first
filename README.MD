@@ -23,3 +23,5 @@ public ChatMessage Receive(ref T fromAddr);
 public T CreateNewT();
 public T GetServer();
 }
+
+Перепишите код клиента и сервера так чтобы они начали поддерживать наши новый источники сообщений через интерфейсы:
