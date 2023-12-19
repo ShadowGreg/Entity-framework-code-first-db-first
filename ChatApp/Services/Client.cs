@@ -4,7 +4,7 @@ using ChatNetwork.Abstracts;
 
 namespace ChatApp.Services;
 
-public class Client {
+public class Client: IClient {
     private readonly string _name;
     private readonly string _ip;
     private readonly int _port;

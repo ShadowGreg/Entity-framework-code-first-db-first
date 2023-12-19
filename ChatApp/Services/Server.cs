@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChatApp.Services;
 
-public class Server {
+public class Server: IServer {
     private readonly IMessageSource _messageSource;
     public Dictionary<string, IPEndPoint> Clients { get; }
     private IPEndPoint _ep;
