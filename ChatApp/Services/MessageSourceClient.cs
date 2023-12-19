@@ -1,10 +1,10 @@
 ﻿using System.Net;
-using ChatCommon.Core.Entities;
-using ChatNetwork.Abstracts;
+using ChatCommon.Abstracts;
+using ChatCommon.Models.Entities;
 
 namespace ChatApp.Services;
 
-public class Client: IClient<IPEndPoint> {
+public class MessageSourceClient: IMessageSourceClient<IPEndPoint> {
     private readonly string _name;
     private readonly string _ip;
     private readonly int _port;
@@ -12,12 +12,11 @@ public class Client: IClient<IPEndPoint> {
     private readonly IPEndPoint _remoteEndPoint;
     private bool flag = true;
 
-    public Client(string name, string ip, IMessageSource<IPEndPoint> messageSource) {
+    public MessageSourceClient(string name, string ip, IMessageSource<IPEndPoint> messageSource) {
         _name = name;
         _ip = ip;
         _port = 12345;
         _messageSource = messageSource;
-        _remoteEndPoint = new IPEndPoint(IPAddress.Parse(_ip), _port);
     }
 
     public async Task Conform(NetMessage messageResource, IPEndPoint remoteEndPoint) {
@@ -29,7 +28,7 @@ public class Client: IClient<IPEndPoint> {
     public async Task ClientListener() {
         IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Parse(_ip), _port);
         while (true) {
-            var messageResource = await _messageSource.ReceivedAsync(remoteEndPoint);
+            NetMessage messageResource =    await _messageSource.ReceivedAsync(remoteEndPoint);
 
             Console.WriteLine("Message received from: " + messageResource.NickNameFrom);
             Console.WriteLine(messageResource.Text);
@@ -81,9 +80,25 @@ public class Client: IClient<IPEndPoint> {
         await ClientListener();
         await ClientSender();
     }
-    
+
     public Task Stop() {
         flag = false;
         return Task.CompletedTask;
+    }
+
+    public void Send(NetMessage message, IPEndPoint toAddr) {
+        _messageSource.SentAsync(message, toAddr).Wait();
+    }
+
+    public NetMessage Receive(ref IPEndPoint fromAddr) {
+        return  _messageSource.ReceivedAsync(fromAddr).Result;
+    }
+
+    public IPEndPoint CreateNewEndPoint() {
+        return new IPEndPoint(IPAddress.Any, 0);
+    }
+
+    public IPEndPoint GetServer() {
+        return _remoteEndPoint;
     }
 }

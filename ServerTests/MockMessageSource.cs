@@ -1,13 +1,13 @@
 ﻿using System.Net;
 using ChatApp.Services;
-using ChatCommon.Core.Entities;
-using ChatNetwork.Abstracts;
+using ChatCommon.Abstracts;
+using ChatCommon.Models.Entities;
 
 namespace ServerTests;
 
-public class MockMessageSource: IMessageSource {
+public class MockMessageSource: IMessageSource<IPEndPoint> {
     private Queue<NetMessage> _messages = new();
-    private Server _server;
+    private MessageSourceServer _messageSourceServer;
     private IPEndPoint _endPoint = new IPEndPoint(IPAddress.Any, 0);
 
     public NetMessage LastReceivedMessage { get; set; }
@@ -31,14 +31,14 @@ public class MockMessageSource: IMessageSource {
         // throw new NotImplementedException();
         endPoint = _endPoint;
         if (_messages.Count == 0) {
-            await _server.Stop();
+            await _messageSourceServer.Stop();
             return null;
         }
 
         return _messages.Dequeue();
     }
 
-    public void SetServer(Server server) {
-        _server = server;
+    public void SetServer(MessageSourceServer messageSourceServer) {
+        _messageSourceServer = messageSourceServer;
     }
 }

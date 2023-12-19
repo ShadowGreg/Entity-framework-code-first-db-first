@@ -1,22 +1,22 @@
 ﻿using System.Net;
-using ChatCommon.Core.Entities;
+using ChatCommon.Abstracts;
+using ChatCommon.Models.Entities;
 using ChatDb.Models;
-using ChatNetwork.Abstracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChatApp.Services;
 
-public class Server: IServer {
+public class MessageSourceServer: IMessageSourceServer<IPEndPoint> {
     private readonly IMessageSource<IPEndPoint> _messageSource;
     public Dictionary<string, IPEndPoint> Clients { get; }
     private IPEndPoint _ep;
     private readonly CancellationTokenSource _tokenSource;
 
 
-    public Server(IMessageSource<IPEndPoint> messageSource) {
+    public MessageSourceServer(IMessageSource<IPEndPoint> messageSource) {
         _messageSource = messageSource;
         Clients = new Dictionary<string, IPEndPoint>();
-        _ep = new IPEndPoint(IPAddress.Any, 0);
+        _ep = CreateNewEndPoint();
         _tokenSource = new CancellationTokenSource();
     }
 
@@ -109,5 +109,21 @@ public class Server: IServer {
     public Task Stop() {
         _tokenSource.Cancel();
         return Task.CompletedTask;
+    }
+
+    public void Send(NetMessage message, IPEndPoint toAddr) {
+        _messageSource.SentAsync(message, toAddr).Wait();
+    }
+
+    public NetMessage Receive(ref IPEndPoint fromAddr) {
+        return _messageSource.ReceivedAsync(fromAddr).Result;
+    }
+
+    public IPEndPoint CreateNewEndPoint() {
+        return new IPEndPoint(IPAddress.Any, 0);
+    }
+
+    public IPEndPoint CopyEndPoint(IPEndPoint t) {
+        return new IPEndPoint(t.Address,t.Port);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using ChatCommon.Core.Entities;
+using ChatCommon.Models.Entities;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 

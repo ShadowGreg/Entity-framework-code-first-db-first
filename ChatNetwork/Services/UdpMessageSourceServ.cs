@@ -1,16 +1,17 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using ChatCommon.Core.Entities;
-using ChatNetwork.Abstracts;
+using ChatCommon.Abstracts;
+using ChatCommon.Models.Entities;
 
 namespace ChatNetwork.Services;
 
-public class UdpMessageSource: IMessageSource {
+public class UdpMessageSourceServ: IMessageSource<IPEndPoint> {
     private readonly UdpClient _udpClient;
+    
 
-    public UdpMessageSource() {
-        _udpClient = new UdpClient(12345);
+    public UdpMessageSourceServ(int port = 12345) {
+        _udpClient = new UdpClient(port);
     }
 
     public async Task SentAsync(NetMessage message, IPEndPoint endPoint) {

@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using ChatApp.Services;
-using ChatCommon.Core.Entities;
+using ChatCommon.Models.Entities;
 
 namespace ServerTests;
 
@@ -9,10 +9,10 @@ public class ClientTests {
     public async Task ClientListener_ShouldReceiveAndConfirmMessages() {
         // Arrange
         var fakeMessageSource = new MockMessageSource();
-        var client = new Client("John", "127.0.0.1", fakeMessageSource);
+        var client = new MessageSourceClient("John", "127.0.0.1", fakeMessageSource);
 
         // Act
-        var listenerTask = client.ClientListener();
+        client.ClientListener();
 
         var message = new NetMessage() {
             NickNameFrom = "Alice",
@@ -30,7 +30,7 @@ public class ClientTests {
     public async Task ClientSender_ShouldSendMessages() {
         // Arrange
         var fakeMessageSource = new MockMessageSource();
-        var client = new Client("John", "127.0.0.1", fakeMessageSource);
+        var client = new MessageSourceClient("John", "127.0.0.1", fakeMessageSource);
 
         // Act
         var senderTask = async () => await client.ClientSender();

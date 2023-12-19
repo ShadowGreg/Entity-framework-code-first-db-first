@@ -1,4 +1,4 @@
-﻿namespace ChatCommon.Core.Entities;
+﻿namespace ChatCommon.Models.Entities;
 
 public class Message {
     public int MessageId { get; set; }

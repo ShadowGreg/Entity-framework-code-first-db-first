@@ -1,20 +1,20 @@
 ﻿using System.Net;
 using ChatApp.Services;
-using ChatCommon.Core.Entities;
+using ChatCommon.Abstracts;
+using ChatCommon.Models.Entities;
 using ChatDb.Models;
-using ChatNetwork.Abstracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace ServerTests;
 
 public class ServerTests {
-    private IMessageSource _messageSource;
-    private Server _server;
+    private IMessageSource<IPEndPoint> _messageSource;
+    private MessageSourceServer _messageSourceServer;
 
     [SetUp]
     public void Setup() {
         _messageSource = new MockMessageSource();
-        _server = new Server(_messageSource);
+        _messageSourceServer = new MessageSourceServer(_messageSource);
     }
 
     [Test]
@@ -27,10 +27,10 @@ public class ServerTests {
         };
 
         // Act
-        await _server.Register(netMessage);
+        await _messageSourceServer.Register(netMessage);
 
         // Assert
-        Assert.IsTrue(_server.Clients.ContainsKey(netMessage.NickNameFrom));
+        Assert.IsTrue(_messageSourceServer.Clients.ContainsKey(netMessage.NickNameFrom));
         using (var context = new ChartContext()) {
             var user = await context.Users.FirstOrDefaultAsync(u => u.FullName == netMessage.NickNameFrom);
             Assert.IsNotNull(user);
@@ -47,10 +47,10 @@ public class ServerTests {
             Text = "Hello",
             EndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234)
         };
-        _server.Clients.Add(netMessage.NickNameTo, netMessage.EndPoint);
+        _messageSourceServer.Clients.Add(netMessage.NickNameTo, netMessage.EndPoint);
 
         // Act
-        await _server.RelyMessage(netMessage);
+        await _messageSourceServer.RelyMessage(netMessage);
 
         // Assert
         using (var context = new ChartContext()) {
@@ -65,7 +65,7 @@ public class ServerTests {
         var messageId = 1;
 
         // Act
-        await _server.Confirmation(messageId);
+        await _messageSourceServer.Confirmation(messageId);
 
         // Assert
         using (var context = new ChartContext()) {

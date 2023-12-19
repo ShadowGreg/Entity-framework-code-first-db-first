@@ -1,10 +1,10 @@
-﻿using System.Net;
-using ChatCommon.Core.Entities;
+﻿using ChatCommon.Models.Entities;
 
-namespace ChatNetwork.Abstracts;
+namespace ChatCommon.Abstracts;
 
 public interface IMessageSource<T> {
     Task SentAsync(NetMessage message, T endPoint);
 
     Task<NetMessage> ReceivedAsync(T endPoint);
+   
 }

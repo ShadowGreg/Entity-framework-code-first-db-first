@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 
-namespace ChatCommon.Core.Entities;
+namespace ChatCommon.Models.Entities;
 
 public enum Command {
     Register,

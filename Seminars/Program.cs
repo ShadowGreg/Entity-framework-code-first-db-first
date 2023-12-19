@@ -1,5 +1,4 @@
-﻿
-using ChatCommon.Core.Entities;
+﻿using ChatCommon.Models.Entities;
 using ChatDb.Models;
 
 public class Program {
