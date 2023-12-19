@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore;
 namespace ChatApp.Services;
 
 public class Server: IServer {
-    private readonly IMessageSource _messageSource;
+    private readonly IMessageSource<IPEndPoint> _messageSource;
     public Dictionary<string, IPEndPoint> Clients { get; }
     private IPEndPoint _ep;
     private readonly CancellationTokenSource _tokenSource;
 
 
-    public Server(IMessageSource messageSource) {
+    public Server(IMessageSource<IPEndPoint> messageSource) {
         _messageSource = messageSource;
         Clients = new Dictionary<string, IPEndPoint>();
         _ep = new IPEndPoint(IPAddress.Any, 0);

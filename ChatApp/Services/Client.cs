@@ -4,15 +4,15 @@ using ChatNetwork.Abstracts;
 
 namespace ChatApp.Services;
 
-public class Client: IClient {
+public class Client: IClient<IPEndPoint> {
     private readonly string _name;
     private readonly string _ip;
     private readonly int _port;
-    public IMessageSource _messageSource;
+    public IMessageSource<IPEndPoint> _messageSource;
     private readonly IPEndPoint _remoteEndPoint;
     private bool flag = true;
 
-    public Client(string name, string ip, IMessageSource messageSource) {
+    public Client(string name, string ip, IMessageSource<IPEndPoint> messageSource) {
         _name = name;
         _ip = ip;
         _port = 12345;

@@ -4,7 +4,6 @@ using ChatCommon.Core.Entities;
 namespace ChatNetwork.Abstracts;
 
 public interface IServer {
-    Dictionary<string, IPEndPoint> Clients { get; }
     Task Register(NetMessage netMessage);
     Task RelyMessage(NetMessage netMessage);
     Task Confirmation(int? id);

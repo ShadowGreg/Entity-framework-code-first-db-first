@@ -3,8 +3,8 @@ using ChatCommon.Core.Entities;
 
 namespace ChatNetwork.Abstracts;
 
-public interface IMessageSource {
-    Task SentAsync(NetMessage message, IPEndPoint endPoint);
+public interface IMessageSource<T> {
+    Task SentAsync(NetMessage message, T endPoint);
 
-    Task<NetMessage> ReceivedAsync(IPEndPoint endPoint);
+    Task<NetMessage> ReceivedAsync(T endPoint);
 }
