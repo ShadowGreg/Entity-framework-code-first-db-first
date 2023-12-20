@@ -10,4 +10,8 @@
       <ProjectReference Include="..\ChatCommon\ChatCommon.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="NetMQ" Version="4.0.1.13" />
+    </ItemGroup>
+
 </Project>
