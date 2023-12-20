@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using ChatApp.Services;
+using ChatCommon.Abstracts;
 using ChatNetwork.Services;
 
 namespace ChatApp;
@@ -16,13 +17,15 @@ public static class Program {
             var client = new Client<IPEndPoint>(args[0], netMsgSource);
             await client.Start();
         }
-        else if (args[0].Equals("NETMQ SERVER")) {
+        else if (args[0].Equals("NETMQ") && args[1].Equals("SERVER")) {
             var netMsgSource = new NetMqMessageSourceServer();
             var server = new Server<IPEndPoint>(netMsgSource);
             await server.Start();
         }
-        else if (args[0].Equals("NETMQ CLIENT")) {
-            var netMsgSource = new NetMqMessageSourceClient();
+        else if (args[0].Equals("NETMQ") && args[1].Equals("CLIENT")) {
+            IMessageSourceClient<IPEndPoint> netMsgSource = new NetMqMessageSourceClient();
+            var client = new Client<IPEndPoint>(args[2], netMsgSource);
+            await client.Start();
         }
     }
 }
