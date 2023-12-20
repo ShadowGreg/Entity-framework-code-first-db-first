@@ -10,26 +10,24 @@ public class Server<T> where T : class {
     private readonly IMessageSourceServer<T> _messageSource;
     public Dictionary<string, T> Clients { get; }
     private T _ep;
-    private readonly CancellationTokenSource _tokenSource;
+    private bool _flag = true;
 
 
     public Server(IMessageSourceServer<T> messageSource) {
         _messageSource = messageSource;
         Clients = new Dictionary<string, T>();
-        _ep = messageSource.CreateNewEndPoint();
-        _tokenSource = new CancellationTokenSource();
     }
 
     public async Task Register(NetMessage netMessage) {
         Console.WriteLine($" Message register from {netMessage.NickNameFrom} to {netMessage.NickNameTo}");
 
         var castEndPoint = netMessage.EndPoint as T;
-        if (Clients.TryAdd(netMessage.NickNameFrom, castEndPoint )) {
-            using (ChartContext context = new ChartContext()) {
-                context.Users.Add(
+        if (Clients.TryAdd(netMessage.NickNameFrom, castEndPoint)) {
+            using (ChartContext dataBase = new ChartContext()) {
+                dataBase.Users.Add(
                     new User() { FullName = netMessage.NickNameFrom }
                 );
-                await context.SaveChangesAsync();
+                await dataBase.SaveChangesAsync();
             }
         }
     }
@@ -46,6 +44,7 @@ public class Server<T> where T : class {
                     { UserFrom = fromUser, UserTo = toUser, Text = netMessage.Text, IsSent = false };
 
                 ctx.Messages.Add(message);
+                await ctx.SaveChangesAsync();
 
                 id = message.MessageId;
             }
@@ -93,7 +92,8 @@ public class Server<T> where T : class {
     public async Task Start() {
         Console.WriteLine("Server started, and listening for messages...");
 
-        while (!_tokenSource.IsCancellationRequested) {
+        while (_flag) {
+            _ep = _messageSource.CreateNewEndPoint();
             try {
                 var message = _messageSource.Receive(ref _ep);
                 Console.WriteLine(message.ToString());
@@ -108,7 +108,7 @@ public class Server<T> where T : class {
     }
 
     public Task Stop() {
-        _tokenSource.Cancel();
+        _flag = false;
         return Task.CompletedTask;
     }
 
