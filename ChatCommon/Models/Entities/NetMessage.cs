@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 
 namespace ChatCommon.Models.Entities;
@@ -17,7 +18,7 @@ public class NetMessage {
     public string? NickNameFrom { get; set; }
     public string? NickNameTo { get; set; }
 
-    public string? EndPoint { get; set; }
+    public IPEndPoint? EndPoint { get; set; }
 
     public Command Command { get; set; }
 
@@ -42,5 +43,21 @@ public class NetMessage {
 
     public override string ToString() {
         return $"{DateTime} \n Получено сообщение {Text} \n от {NickNameFrom}  ";
+    }
+}
+
+public class IPEndPointConverter : JsonConverter<IPEndPoint>
+{
+    public override IPEndPoint Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var ipAndPort = reader.GetString().Split(':');
+        var ipAddress = IPAddress.Parse(ipAndPort[0]);
+        var port = int.Parse(ipAndPort[1]);
+        return new IPEndPoint(ipAddress, port);
+    }
+
+    public override void Write(Utf8JsonWriter writer, IPEndPoint value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue($"{value.Address}:{value.Port}");
     }
 }
